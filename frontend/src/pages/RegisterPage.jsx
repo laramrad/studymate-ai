@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { CheckCircle2, Sparkles, Zap } from "lucide-react"
+import { CheckCircle2, Sparkles, Zap, Eye, EyeOff } from "lucide-react"
 import api from "../services/api"
 
 function RegisterPage() {
@@ -10,8 +10,17 @@ function RegisterPage() {
     name: "",
     email: "",
     password: "",
+    password_confirmation: "",
     plan: "free",
+    billing_name: "",
+    billing_email: "",
+    card_number: "",
+    expiry_date: "",
+    cvc: "",
   })
+
+  const [showPassword, setShowPassword] = useState(false)
+  const [showVerifyPassword, setShowVerifyPassword] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -43,8 +52,29 @@ function RegisterPage() {
     setLoading(true)
     setError("")
 
+    if (form.password !== form.password_confirmation) {
+      setError("Password and verify password do not match.")
+      setLoading(false)
+      return
+    }
+
     try {
-      const response = await api.post("/register", form)
+      const payload = {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        plan: form.plan,
+      }
+
+      if (form.plan === "paid") {
+        payload.billing_name = form.billing_name
+        payload.billing_email = form.billing_email
+        payload.card_number = form.card_number
+        payload.expiry_date = form.expiry_date
+        payload.cvc = form.cvc
+      }
+
+      const response = await api.post("/register", payload)
 
       localStorage.setItem("token", response.data.token)
       localStorage.setItem("user", JSON.stringify(response.data.user))
@@ -117,23 +147,168 @@ function RegisterPage() {
 
               <div>
                 <label className="mb-2 block text-sm text-slate-300">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-cyan-500"
-                  placeholder="******"
-                  required
-                />
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-12 outline-none focus:border-cyan-500"
+                    placeholder="******"
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-cyan-300"
+                    title={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                  </button>
+                </div>
               </div>
+
+              <div>
+                <label className="mb-2 block text-sm text-slate-300">
+                  Verify Password
+                </label>
+
+                <div className="relative">
+                  <input
+                    type={showVerifyPassword ? "text" : "password"}
+                    name="password_confirmation"
+                    value={form.password_confirmation}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-12 outline-none focus:border-cyan-500"
+                    placeholder="******"
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowVerifyPassword(!showVerifyPassword)}
+                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-cyan-300"
+                    title={showVerifyPassword ? "Hide password" : "Show password"}
+                  >
+                    {showVerifyPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                  </button>
+                </div>
+
+                {form.password_confirmation &&
+                  form.password !== form.password_confirmation && (
+                    <p className="mt-2 text-sm text-red-300">
+                      Passwords do not match.
+                    </p>
+                  )}
+
+                {form.password_confirmation &&
+                  form.password === form.password_confirmation && (
+                    <p className="mt-2 text-sm text-emerald-300">
+                      Passwords match.
+                    </p>
+                  )}
+              </div>
+
+              {form.plan === "paid" && (
+                <div className="rounded-3xl border border-cyan-500/20 bg-cyan-500/10 p-5">
+                  <div className="mb-5">
+                    <h3 className="text-lg font-bold">Billing Information</h3>
+                    <p className="mt-1 text-sm text-slate-400">
+                      Testing only. No real payment will be processed.
+                    </p>
+                  </div>
+
+                  <div className="space-y-5">
+                    <div>
+                      <label className="mb-2 block text-sm text-slate-300">
+                        Cardholder Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="billing_name"
+                        value={form.billing_name}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-cyan-500"
+                        placeholder="Test Student"
+                        required={form.plan === "paid"}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm text-slate-300">
+                        Billing Email *
+                      </label>
+                      <input
+                        type="email"
+                        name="billing_email"
+                        value={form.billing_email}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-cyan-500"
+                        placeholder="billing@example.com"
+                        required={form.plan === "paid"}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm text-slate-300">
+                        Card Number *
+                      </label>
+                      <input
+                        type="text"
+                        name="card_number"
+                        value={form.card_number}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-cyan-500"
+                        placeholder="4242 4242 4242 4242"
+                        required={form.plan === "paid"}
+                      />
+                    </div>
+
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <div>
+                        <label className="mb-2 block text-sm text-slate-300">
+                          Expiry Date *
+                        </label>
+                        <input
+                          type="text"
+                          name="expiry_date"
+                          value={form.expiry_date}
+                          onChange={handleChange}
+                          className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-cyan-500"
+                          placeholder="12/28"
+                          required={form.plan === "paid"}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-sm text-slate-300">
+                          CVC *
+                        </label>
+                        <input
+                          type="password"
+                          name="cvc"
+                          value={form.cvc}
+                          onChange={handleChange}
+                          className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-cyan-500"
+                          placeholder="123"
+                          required={form.plan === "paid"}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full rounded-xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 py-3 font-semibold text-white shadow-lg shadow-cyan-500/20 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? "Creating account..." : `Register with ${form.plan === "paid" ? "Paid" : "Free"} Plan`}
+                {loading
+                  ? "Creating account..."
+                  : `Register with ${form.plan === "paid" ? "Paid" : "Free"} Plan`}
               </button>
             </form>
 
@@ -184,6 +359,7 @@ function RegisterPage() {
                 "Unlimited deadlines",
                 "Unlimited study plans",
                 "Priority AI study tools",
+                "Billing information required",
               ]}
               buttonText="Choose Paid"
               highlight

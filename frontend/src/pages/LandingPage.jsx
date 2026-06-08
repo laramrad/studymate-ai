@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import {
   Sparkles,
   FileText,
@@ -6,7 +7,6 @@ import {
   Brain,
   AlarmClock,
   CalendarDays,
-  LayoutDashboard,
   ShieldCheck,
   ArrowRight,
   CheckCircle2,
@@ -15,15 +15,34 @@ import {
   BarChart3,
   Crown,
   CreditCard,
-  Zap,
-  Lock,
   Gauge,
+  Sun,
+  Moon,
 } from "lucide-react"
 
 function LandingPage() {
   const token = localStorage.getItem("token")
   const user = JSON.parse(localStorage.getItem("user"))
   const isLoggedIn = Boolean(token)
+
+  const savedTheme = localStorage.getItem("theme") || "dark"
+  const [theme, setTheme] = useState(savedTheme)
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme)
+
+    if (theme === "light") {
+      document.documentElement.classList.add("light-theme")
+    } else {
+      document.documentElement.classList.remove("light-theme")
+    }
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
+
+  const ThemeIcon = theme === "dark" ? Sun : Moon
 
   return (
     <div className="min-h-screen overflow-hidden bg-slate-950 text-white">
@@ -62,6 +81,15 @@ function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800"
+              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              <ThemeIcon size={21} />
+            </button>
+
             {isLoggedIn ? (
               <a
                 href="/dashboard"
@@ -93,15 +121,15 @@ function LandingPage() {
 
       <section className="mx-auto grid min-h-[calc(100vh-88px)] max-w-7xl grid-cols-1 items-center gap-14 px-5 py-16 lg:grid-cols-2 lg:px-10">
         <div>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-600">
             <Sparkles size={16} />
             AI-powered learning platform for university students
           </div>
 
           {isLoggedIn && (
-            <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-200">
+            <div className="mb-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-4 text-sm font-medium text-emerald-600">
               You are logged in as{" "}
-              <span className="font-semibold">{user?.name || "Student"}</span>.
+              <span className="font-bold">{user?.name || "Student"}</span>.
             </div>
           )}
 
@@ -159,7 +187,7 @@ function LandingPage() {
         <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-800 bg-slate-900/60 p-8 shadow-2xl shadow-slate-950/40 md:p-10">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
-              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
+              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-500">
                 Project Problem
               </p>
               <h3 className="text-3xl font-black leading-tight md:text-4xl">
@@ -303,7 +331,7 @@ function LandingPage() {
 
         <div className="mx-auto mt-8 max-w-6xl rounded-[2rem] border border-cyan-500/20 bg-cyan-500/10 p-6">
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-500">
               <Gauge size={24} />
             </div>
 
@@ -327,11 +355,11 @@ function LandingPage() {
         <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
-              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-300">
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-500">
                 <ShieldCheck size={28} />
               </div>
 
-              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
+              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-500">
                 Admin Monitoring
               </p>
 
@@ -424,7 +452,7 @@ function HeroDashboardCard() {
             <p className="text-sm text-slate-400">Database Systems course</p>
           </div>
 
-          <span className="rounded-full bg-green-500/10 px-3 py-1 text-sm font-semibold text-green-400">
+          <span className="rounded-full bg-green-500/10 px-3 py-1 text-sm font-semibold text-green-500">
             Active
           </span>
         </div>
@@ -436,8 +464,8 @@ function HeroDashboardCard() {
           </div>
 
           <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-5">
-            <p className="mb-2 text-sm text-cyan-300">AI Summary</p>
-            <p className="text-sm leading-6 text-slate-200">
+            <p className="mb-2 text-sm font-semibold text-cyan-600">AI Summary</p>
+            <p className="text-sm leading-6 text-slate-300">
               Normalization organizes database tables to reduce redundancy and
               improve data consistency. Students can review the concept using quizzes
               and flashcards.
@@ -465,7 +493,7 @@ function HeroDashboardCard() {
 function HeroMiniCard({ icon: Icon, title, subtitle }) {
   return (
     <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-5">
-      <Icon className="mb-4 text-cyan-300" size={26} />
+      <Icon className="mb-4 text-cyan-500" size={26} />
       <p className="text-2xl font-black">{title}</p>
       <p className="text-sm text-slate-400">{subtitle}</p>
     </div>
@@ -484,7 +512,7 @@ function StatBox({ number, label }) {
 function SectionHeader({ label, title, description }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
+      <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-500">
         {label}
       </p>
       <h3 className="text-4xl font-black leading-tight md:text-5xl">{title}</h3>
@@ -498,7 +526,7 @@ function SectionHeader({ label, title, description }) {
 function FeatureCard({ icon: Icon, title, description }) {
   return (
     <div className="group rounded-[2rem] border border-slate-800 bg-slate-900/70 p-7 transition hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-950/20">
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500/20 to-emerald-500/20 text-cyan-300">
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500/20 to-emerald-500/20 text-cyan-500">
         <Icon size={28} />
       </div>
 
@@ -512,8 +540,8 @@ function StepCard({ number, icon: Icon, title, description }) {
   return (
     <div className="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-7">
       <div className="mb-5 flex items-center justify-between">
-        <p className="text-sm font-black text-cyan-300">{number}</p>
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
+        <p className="text-sm font-black text-cyan-500">{number}</p>
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-500">
           <Icon size={22} />
         </div>
       </div>
@@ -547,8 +575,8 @@ function PricingCard({
           <div
             className={`flex h-14 w-14 items-center justify-center rounded-2xl ${
               highlighted
-                ? "bg-emerald-500/10 text-emerald-300"
-                : "bg-cyan-500/10 text-cyan-300"
+                ? "bg-emerald-500/10 text-emerald-500"
+                : "bg-cyan-500/10 text-cyan-500"
             }`}
           >
             <Icon size={27} />
@@ -561,7 +589,7 @@ function PricingCard({
         </div>
 
         {highlighted && (
-          <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-sm font-semibold text-emerald-300">
+          <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-sm font-semibold text-emerald-500">
             Popular
           </span>
         )}
@@ -575,7 +603,7 @@ function PricingCard({
       <div className="space-y-3">
         {features.map((feature) => (
           <div key={feature} className="flex items-center gap-3 text-sm text-slate-300">
-            <CheckCircle2 className="text-emerald-300" size={18} />
+            <CheckCircle2 className="text-emerald-500" size={18} />
             {feature}
           </div>
         ))}

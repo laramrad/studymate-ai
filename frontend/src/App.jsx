@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import LandingPage from "./pages/LandingPage"
 import LoginPage from "./pages/LoginPage"
@@ -43,6 +44,16 @@ function AdminRoute({ children }) {
 }
 
 function App() {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "dark"
+
+    if (savedTheme === "light") {
+      document.documentElement.classList.add("light-theme")
+    } else {
+      document.documentElement.classList.remove("light-theme")
+    }
+  }, [])
+
   return (
     <BrowserRouter>
       <Routes>
