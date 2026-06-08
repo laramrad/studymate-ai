@@ -8,15 +8,16 @@ import {
   CalendarDays,
   LayoutDashboard,
   ShieldCheck,
-  Database,
-  Code2,
-  Server,
-  Lock,
   ArrowRight,
   CheckCircle2,
   UploadCloud,
   BookOpen,
   BarChart3,
+  Crown,
+  CreditCard,
+  Zap,
+  Lock,
+  Gauge,
 } from "lucide-react"
 
 function LandingPage() {
@@ -27,9 +28,9 @@ function LandingPage() {
   return (
     <div className="min-h-screen overflow-hidden bg-slate-950 text-white">
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute left-[-10%] top-[-10%] h-[420px] w-[420px] rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <div className="absolute left-[-10%] top-[-10%] h-[420px] w-[420px] rounded-full bg-sky-500/20 blur-3xl"></div>
         <div className="absolute right-[-10%] top-[15%] h-[420px] w-[420px] rounded-full bg-cyan-500/10 blur-3xl"></div>
-        <div className="absolute bottom-[-10%] left-[20%] h-[420px] w-[420px] rounded-full bg-pink-500/10 blur-3xl"></div>
+        <div className="absolute bottom-[-10%] left-[20%] h-[420px] w-[420px] rounded-full bg-emerald-500/10 blur-3xl"></div>
       </div>
 
       <nav className="sticky top-0 z-40 border-b border-slate-800/70 bg-slate-950/80 px-5 py-5 backdrop-blur-xl lg:px-10">
@@ -46,10 +47,18 @@ function LandingPage() {
           </a>
 
           <div className="hidden items-center gap-8 text-sm font-medium text-slate-300 md:flex">
-            <a href="#features" className="hover:text-white">Features</a>
-            <a href="#workflow" className="hover:text-white">Workflow</a>
-            <a href="#technology" className="hover:text-white">Technology</a>
-            <a href="#admin" className="hover:text-white">Admin</a>
+            <a href="#features" className="hover:text-white">
+              Features
+            </a>
+            <a href="#workflow" className="hover:text-white">
+              Workflow
+            </a>
+            <a href="#plans" className="hover:text-white">
+              Plans
+            </a>
+            <a href="#admin" className="hover:text-white">
+              Admin
+            </a>
           </div>
 
           <div className="flex items-center gap-3">
@@ -91,7 +100,8 @@ function LandingPage() {
 
           {isLoggedIn && (
             <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-200">
-              You are logged in as <span className="font-semibold">{user?.name || "Student"}</span>.
+              You are logged in as{" "}
+              <span className="font-semibold">{user?.name || "Student"}</span>.
             </div>
           )}
 
@@ -128,10 +138,10 @@ function LandingPage() {
             )}
 
             <a
-              href="#features"
+              href="#plans"
               className="rounded-2xl border border-slate-700 px-7 py-4 font-semibold hover:bg-slate-900"
             >
-              View Features
+              View Plans
             </a>
           </div>
 
@@ -153,15 +163,16 @@ function LandingPage() {
                 Project Problem
               </p>
               <h3 className="text-3xl font-black leading-tight md:text-4xl">
-                Students have many files, deadlines, quizzes, and exams, but no single smart study system.
+                Students need one smart place for materials, quizzes, flashcards,
+                deadlines, and study planning.
               </h3>
             </div>
 
             <p className="text-lg leading-8 text-slate-300">
-              University students receive PDFs, documents, assignments, quiz dates,
-              and exam deadlines from different sources. StudyMate AI brings everything
-              together by allowing students to upload materials, extract text, ask
-              study questions, generate quizzes and flashcards, and create study plans.
+              StudyMate AI brings the study process into one organized platform. A
+              student can upload learning materials, ask AI-powered questions,
+              generate practice resources, track deadlines, and choose a plan based
+              on how much access they need.
             </p>
           </div>
         </div>
@@ -212,27 +223,27 @@ function LandingPage() {
         <SectionHeader
           label="Student Workflow"
           title="How the system works"
-          description="A simple academic workflow from course creation to AI-powered study preparation."
+          description="A simple academic workflow from account creation to AI-powered study preparation."
         />
 
         <div className="mx-auto mt-12 grid max-w-7xl gap-6 md:grid-cols-2 xl:grid-cols-4">
           <StepCard
             number="01"
+            icon={CreditCard}
+            title="Choose Plan"
+            description="The student chooses either Free or Paid while creating the account."
+          />
+          <StepCard
+            number="02"
             icon={BookOpen}
             title="Create Course"
             description="The student creates a course such as Database Systems, AI, or Web Development."
           />
           <StepCard
-            number="02"
+            number="03"
             icon={UploadCloud}
             title="Upload Material"
             description="The student uploads PDFs, notes, or documents and links them to a course."
-          />
-          <StepCard
-            number="03"
-            icon={Sparkles}
-            title="Use AI Tools"
-            description="The system generates summaries, quizzes, flashcards, and AI answers."
           />
           <StepCard
             number="04"
@@ -243,71 +254,102 @@ function LandingPage() {
         </div>
       </section>
 
-      <section id="admin" className="px-5 py-20 lg:px-10">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2">
-          <div className="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8">
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-300">
-              <ShieldCheck size={28} />
+      <section id="plans" className="px-5 py-20 lg:px-10">
+        <SectionHeader
+          label="Subscription Plans"
+          title="Choose the study plan that fits your needs"
+          description="The platform includes a testing subscription system with Free and Paid plans. Paid users get higher limits and full access."
+        />
+
+        <div className="mx-auto mt-12 grid max-w-6xl gap-6 lg:grid-cols-2">
+          <PricingCard
+            icon={Sparkles}
+            title="Free Plan"
+            price="$0"
+            subtitle="For testing and basic studying"
+            features={[
+              "2 courses",
+              "3 uploaded materials",
+              "5 generated quizzes",
+              "30 flashcards",
+              "5 deadlines",
+              "2 study plans",
+              "Basic dashboard access",
+            ]}
+            buttonText={isLoggedIn ? "Manage in Profile" : "Start Free"}
+            buttonHref={isLoggedIn ? "/profile" : "/register"}
+          />
+
+          <PricingCard
+            icon={Crown}
+            title="Paid Plan"
+            price="$9.99"
+            subtitle="For full academic access"
+            features={[
+              "Unlimited courses",
+              "Unlimited uploaded materials",
+              "Unlimited generated quizzes",
+              "Unlimited flashcards",
+              "Unlimited deadlines",
+              "Unlimited study plans",
+              "Priority AI study tools",
+              "Fake billing information for testing",
+            ]}
+            buttonText={isLoggedIn ? "Upgrade in Profile" : "Choose Paid"}
+            buttonHref={isLoggedIn ? "/profile" : "/register"}
+            highlighted
+          />
+        </div>
+
+        <div className="mx-auto mt-8 max-w-6xl rounded-[2rem] border border-cyan-500/20 bg-cyan-500/10 p-6">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
+              <Gauge size={24} />
             </div>
 
-            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
-              Admin Monitoring
-            </p>
+            <div>
+              <h3 className="text-xl font-bold">Plan restrictions</h3>
+              <p className="text-sm text-slate-400">
+                Free users have limited usage. Paid users unlock full platform access.
+              </p>
+            </div>
+          </div>
 
-            <h3 className="text-3xl font-black">Built-in admin panel</h3>
+          <div className="grid gap-4 md:grid-cols-3">
+            <LimitBox label="Free Materials" value="3 uploads" />
+            <LimitBox label="Free Quizzes" value="5 quizzes" />
+            <LimitBox label="Paid Access" value="Unlimited usage" />
+          </div>
+        </div>
+      </section>
 
-            <p className="mt-4 leading-7 text-slate-400">
-              Admins can monitor registered students, uploaded materials, courses,
-              generated quizzes, deadlines, and study activity from a dedicated admin dashboard.
-            </p>
+      <section id="admin" className="px-5 py-20 lg:px-10">
+        <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8">
+          <div className="grid gap-10 lg:grid-cols-2">
+            <div>
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-300">
+                <ShieldCheck size={28} />
+              </div>
 
-            <div className="mt-8 grid grid-cols-2 gap-4">
+              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
+                Admin Monitoring
+              </p>
+
+              <h3 className="text-3xl font-black">Built-in admin panel</h3>
+
+              <p className="mt-4 leading-7 text-slate-400">
+                Admins can monitor registered students, uploaded materials, courses,
+                generated quizzes, deadlines, and study activity from a dedicated admin dashboard.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <MiniCard label="Students" value="Manage" />
               <MiniCard label="Courses" value="View" />
               <MiniCard label="Materials" value="Track" />
               <MiniCard label="Quizzes" value="Monitor" />
             </div>
           </div>
-
-          <div className="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8">
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300">
-              <LayoutDashboard size={28} />
-            </div>
-
-            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-emerald-300">
-              Academic Value
-            </p>
-
-            <h3 className="text-3xl font-black">A complete senior project</h3>
-
-            <p className="mt-4 leading-7 text-slate-400">
-              The project includes authentication, role-based access, file upload,
-              database relationships, AI-ready architecture, CRUD modules, dashboards,
-              progress tracking, and admin reports.
-            </p>
-
-            <div className="mt-8 space-y-3">
-              <CheckItem text="React frontend with protected routes" />
-              <CheckItem text="Laravel API backend with Sanctum authentication" />
-              <CheckItem text="MySQL database with related tables" />
-              <CheckItem text="AI-ready architecture using uploaded material text" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="technology" className="px-5 py-20 lg:px-10">
-        <SectionHeader
-          label="Technology Stack"
-          title="Modern full-stack development"
-          description="The project is built using common technologies required in real-world web applications."
-        />
-
-        <div className="mx-auto mt-12 grid max-w-7xl gap-6 md:grid-cols-2 xl:grid-cols-4">
-          <TechCard icon={Code2} title="React" description="Modern frontend UI and routing" />
-          <TechCard icon={Server} title="Laravel API" description="Backend logic and REST endpoints" />
-          <TechCard icon={Database} title="MySQL" description="Relational database storage" />
-          <TechCard icon={Lock} title="Sanctum" description="Token-based authentication" />
         </div>
       </section>
 
@@ -319,19 +361,28 @@ function LandingPage() {
 
           <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">
             {isLoggedIn
-              ? "You are already logged in. Continue to your dashboard and keep managing your courses, materials, quizzes, and study plans."
-              : "Create an account, upload course material, and start using AI-powered tools to organize your learning."}
+              ? "You are already logged in. Continue to your dashboard or manage your subscription plan from your profile."
+              : "Create an account, choose your plan, and start using AI-powered tools to organize your learning."}
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             {isLoggedIn ? (
-              <a
-                href="/dashboard"
-                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-7 py-4 font-semibold text-white hover:opacity-90"
-              >
-                Go to Dashboard
-                <ArrowRight size={18} />
-              </a>
+              <>
+                <a
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-7 py-4 font-semibold text-white hover:opacity-90"
+                >
+                  Go to Dashboard
+                  <ArrowRight size={18} />
+                </a>
+
+                <a
+                  href="/profile"
+                  className="rounded-2xl border border-slate-700 px-7 py-4 font-semibold hover:bg-slate-900"
+                >
+                  Manage Plan
+                </a>
+              </>
             ) : (
               <>
                 <a
@@ -473,32 +524,92 @@ function StepCard({ number, icon: Icon, title, description }) {
   )
 }
 
-function MiniCard({ label, value }) {
+function PricingCard({
+  icon: Icon,
+  title,
+  price,
+  subtitle,
+  features,
+  buttonText,
+  buttonHref,
+  highlighted = false,
+}) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+    <div
+      className={`rounded-[2rem] border p-8 ${
+        highlighted
+          ? "border-cyan-400/50 bg-gradient-to-br from-cyan-500/15 to-emerald-500/10 shadow-2xl shadow-cyan-950/30"
+          : "border-slate-800 bg-slate-900/70"
+      }`}
+    >
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div
+            className={`flex h-14 w-14 items-center justify-center rounded-2xl ${
+              highlighted
+                ? "bg-emerald-500/10 text-emerald-300"
+                : "bg-cyan-500/10 text-cyan-300"
+            }`}
+          >
+            <Icon size={27} />
+          </div>
+
+          <div>
+            <h3 className="text-2xl font-black">{title}</h3>
+            <p className="text-sm text-slate-400">{subtitle}</p>
+          </div>
+        </div>
+
+        {highlighted && (
+          <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-sm font-semibold text-emerald-300">
+            Popular
+          </span>
+        )}
+      </div>
+
+      <div className="mb-6">
+        <span className="text-5xl font-black">{price}</span>
+        {title === "Paid Plan" && <span className="text-slate-400"> / month</span>}
+      </div>
+
+      <div className="space-y-3">
+        {features.map((feature) => (
+          <div key={feature} className="flex items-center gap-3 text-sm text-slate-300">
+            <CheckCircle2 className="text-emerald-300" size={18} />
+            {feature}
+          </div>
+        ))}
+      </div>
+
+      <a
+        href={buttonHref}
+        className={`mt-8 inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-4 font-semibold ${
+          highlighted
+            ? "bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 text-white hover:opacity-90"
+            : "border border-slate-700 hover:bg-slate-800"
+        }`}
+      >
+        {buttonText}
+        <ArrowRight size={18} />
+      </a>
+    </div>
+  )
+}
+
+function LimitBox({ label, value }) {
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
       <p className="text-sm text-slate-500">{label}</p>
       <p className="mt-1 text-xl font-black">{value}</p>
     </div>
   )
 }
 
-function CheckItem({ text }) {
+function MiniCard({ label, value }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-950 p-4">
-      <CheckCircle2 className="text-green-400" size={22} />
-      <p className="text-sm text-slate-300">{text}</p>
-    </div>
-  )
-}
-
-function TechCard({ icon: Icon, title, description }) {
-  return (
-    <div className="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-6 text-center">
-      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
-        <Icon size={28} />
-      </div>
-      <h4 className="text-xl font-bold">{title}</h4>
-      <p className="mt-3 text-sm leading-6 text-slate-400">{description}</p>
+    <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5">
+      <p className="text-sm text-slate-500">{label}</p>
+      <p className="mt-1 text-xl font-black">{value}</p>
     </div>
   )
 }

@@ -4,18 +4,20 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
     protected $fillable = [
         'name',
         'email',
         'password',
         'role',
+        'plan',
+        'billing_status',
+        'plan_started_at',
     ];
 
     protected $hidden = [
@@ -28,46 +30,17 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'plan_started_at' => 'datetime',
         ];
     }
 
-    public function courses()
+    public function isPaid(): bool
     {
-        return $this->hasMany(Course::class);
+        return $this->plan === 'paid';
     }
 
-    public function materials()
+    public function isFree(): bool
     {
-        return $this->hasMany(Material::class);
-    }
-
-    public function aiChats()
-    {
-        return $this->hasMany(AiChat::class);
-    }
-
-    public function quizzes()
-    {
-        return $this->hasMany(Quiz::class);
-    }
-
-    public function quizAttempts()
-    {
-        return $this->hasMany(QuizAttempt::class);
-    }
-
-    public function flashcards()
-    {
-        return $this->hasMany(Flashcard::class);
-    }
-
-    public function deadlines()
-    {
-        return $this->hasMany(Deadline::class);
-    }
-
-    public function studyPlans()
-    {
-        return $this->hasMany(StudyPlan::class);
+        return $this->plan === 'free';
     }
 }

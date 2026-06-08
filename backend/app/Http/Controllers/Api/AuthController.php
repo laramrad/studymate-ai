@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -17,21 +16,27 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
+            'plan' => ['nullable', Rule::in(['free', 'paid'])],
         ]);
+
+        $plan = $validated['plan'] ?? 'free';
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password'],
+            'password' => Hash::make($validated['password']),
             'role' => 'student',
+            'plan' => $plan,
+            'billing_status' => $plan === 'paid' ? 'active' : 'inactive',
+            'plan_started_at' => now(),
         ]);
 
-        $token = $user->createToken('studymate_token')->plainTextToken;
+        $token = $user->createToken('studymate-token')->plainTextToken;
 
         return response()->json([
             'message' => 'Account created successfully.',
-            'user' => $user,
             'token' => $token,
+            'user' => $user,
         ], 201);
     }
 
@@ -44,18 +49,18 @@ class AuthController extends Controller
 
         $user = User::where('email', $validated['email'])->first();
 
-        if (! $user || ! Hash::check($validated['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+        if (!$user || !Hash::check($validated['password'], $user->password)) {
+            return response()->json([
+                'message' => 'Invalid email or password.',
+            ], 401);
         }
 
-        $token = $user->createToken('studymate_token')->plainTextToken;
+        $token = $user->createToken('studymate-token')->plainTextToken;
 
         return response()->json([
             'message' => 'Logged in successfully.',
-            'user' => $user,
             'token' => $token,
+            'user' => $user,
         ]);
     }
 
@@ -80,14 +85,11 @@ class AuthController extends Controller
             ],
         ]);
 
-        $user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-        ]);
+        $user->update($validated);
 
         return response()->json([
             'message' => 'Profile updated successfully.',
-            'user' => $user,
+            'user' => $user->fresh(),
         ]);
     }
 
@@ -100,14 +102,14 @@ class AuthController extends Controller
             'new_password' => ['required', 'string', 'min:6'],
         ]);
 
-        if (! Hash::check($validated['current_password'], $user->password)) {
+        if (!Hash::check($validated['current_password'], $user->password)) {
             return response()->json([
                 'message' => 'Current password is incorrect.',
             ], 422);
         }
 
         $user->update([
-            'password' => $validated['new_password'],
+            'password' => Hash::make($validated['new_password']),
         ]);
 
         return response()->json([
@@ -115,12 +117,27 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
+    public function updatePlan(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'plan' => ['required', Rule::in(['free', 'paid'])],
+        ]);
+
+        $plan = $validated['plan'];
+
+        $user->update([
+            'plan' => $plan,
+            'billing_status' => $plan === 'paid' ? 'active' : 'inactive',
+            'plan_started_at' => now(),
+        ]);
 
         return response()->json([
-            'message' => 'Logged out successfully.',
+            'message' => $plan === 'paid'
+                ? 'Plan upgraded to Paid successfully.'
+                : 'Plan changed to Free successfully.',
+            'user' => $user->fresh(),
         ]);
     }
 }
