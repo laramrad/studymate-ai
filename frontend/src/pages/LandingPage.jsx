@@ -20,21 +20,23 @@ import {
 } from "lucide-react"
 
 function LandingPage() {
+  const token = localStorage.getItem("token")
+  const user = JSON.parse(localStorage.getItem("user"))
+  const isLoggedIn = Boolean(token)
+
   return (
     <div className="min-h-screen overflow-hidden bg-slate-950 text-white">
-      {/* Background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute left-[-10%] top-[-10%] h-[420px] w-[420px] rounded-full bg-indigo-500/20 blur-3xl"></div>
         <div className="absolute right-[-10%] top-[15%] h-[420px] w-[420px] rounded-full bg-cyan-500/10 blur-3xl"></div>
         <div className="absolute bottom-[-10%] left-[20%] h-[420px] w-[420px] rounded-full bg-pink-500/10 blur-3xl"></div>
       </div>
 
-      {/* Navbar */}
       <nav className="sticky top-0 z-40 border-b border-slate-800/70 bg-slate-950/80 px-5 py-5 backdrop-blur-xl lg:px-10">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
           <a href="/" className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-indigo-500/25">
-              <Sparkles size={24} />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 via-cyan-500 to-emerald-400 text-white shadow-lg shadow-cyan-500/25">
+              <BookOpen size={24} />
             </div>
 
             <div>
@@ -51,34 +53,51 @@ function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <a
-              href="/login"
-              className="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-semibold hover:bg-slate-900"
-            >
-              Login
-            </a>
+            {isLoggedIn ? (
+              <a
+                href="/dashboard"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 hover:opacity-90"
+              >
+                Go to Dashboard
+                <ArrowRight size={17} />
+              </a>
+            ) : (
+              <>
+                <a
+                  href="/login"
+                  className="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-semibold hover:bg-slate-900"
+                >
+                  Login
+                </a>
 
-            <a
-              href="/register"
-              className="hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-5 py-3 text-sm font-semibold shadow-lg shadow-indigo-500/20 hover:from-indigo-600 hover:to-purple-600 sm:inline-block"
-            >
-              Get Started
-            </a>
+                <a
+                  href="/register"
+                  className="hidden rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 hover:opacity-90 sm:inline-block"
+                >
+                  Get Started
+                </a>
+              </>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
       <section className="mx-auto grid min-h-[calc(100vh-88px)] max-w-7xl grid-cols-1 items-center gap-14 px-5 py-16 lg:grid-cols-2 lg:px-10">
         <div>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-indigo-500/10 px-4 py-2 text-sm text-indigo-200">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
             <Sparkles size={16} />
             AI-powered learning platform for university students
           </div>
 
+          {isLoggedIn && (
+            <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-200">
+              You are logged in as <span className="font-semibold">{user?.name || "Student"}</span>.
+            </div>
+          )}
+
           <h2 className="max-w-3xl text-5xl font-black leading-tight tracking-tight md:text-6xl xl:text-7xl">
             Study smarter with your own{" "}
-            <span className="bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
               AI assistant.
             </span>
           </h2>
@@ -90,13 +109,23 @@ function LandingPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <a
-              href="/register"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-7 py-4 font-semibold shadow-lg shadow-indigo-500/25 hover:from-indigo-600 hover:to-purple-600"
-            >
-              Start Learning
-              <ArrowRight size={18} />
-            </a>
+            {isLoggedIn ? (
+              <a
+                href="/dashboard"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-7 py-4 font-semibold text-white shadow-lg shadow-cyan-500/25 hover:opacity-90"
+              >
+                Continue to Dashboard
+                <ArrowRight size={18} />
+              </a>
+            ) : (
+              <a
+                href="/register"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-7 py-4 font-semibold text-white shadow-lg shadow-cyan-500/25 hover:opacity-90"
+              >
+                Start Learning
+                <ArrowRight size={18} />
+              </a>
+            )}
 
             <a
               href="#features"
@@ -116,12 +145,11 @@ function LandingPage() {
         <HeroDashboardCard />
       </section>
 
-      {/* Problem */}
       <section className="px-5 py-20 lg:px-10">
         <div className="mx-auto max-w-7xl rounded-[2rem] border border-slate-800 bg-slate-900/60 p-8 shadow-2xl shadow-slate-950/40 md:p-10">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
-              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-indigo-300">
+              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
                 Project Problem
               </p>
               <h3 className="text-3xl font-black leading-tight md:text-4xl">
@@ -139,7 +167,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
       <section id="features" className="px-5 py-20 lg:px-10">
         <SectionHeader
           label="Core Features"
@@ -181,7 +208,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Workflow */}
       <section id="workflow" className="px-5 py-20 lg:px-10">
         <SectionHeader
           label="Student Workflow"
@@ -217,15 +243,14 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Admin */}
       <section id="admin" className="px-5 py-20 lg:px-10">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2">
           <div className="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8">
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/15 text-purple-300">
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-300">
               <ShieldCheck size={28} />
             </div>
 
-            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-purple-300">
+            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
               Admin Monitoring
             </p>
 
@@ -245,11 +270,11 @@ function LandingPage() {
           </div>
 
           <div className="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-8">
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-300">
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300">
               <LayoutDashboard size={28} />
             </div>
 
-            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
+            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-emerald-300">
               Academic Value
             </p>
 
@@ -271,7 +296,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Technology */}
       <section id="technology" className="px-5 py-20 lg:px-10">
         <SectionHeader
           label="Technology Stack"
@@ -287,31 +311,45 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="px-5 py-20 lg:px-10">
-        <div className="mx-auto max-w-5xl rounded-[2rem] border border-indigo-500/30 bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-cyan-500/10 p-10 text-center shadow-2xl shadow-indigo-950/30">
-          <h3 className="text-4xl font-black">Ready to study smarter?</h3>
+        <div className="mx-auto max-w-5xl rounded-[2rem] border border-cyan-500/30 bg-gradient-to-r from-sky-500/20 via-cyan-500/10 to-emerald-500/10 p-10 text-center shadow-2xl shadow-cyan-950/30">
+          <h3 className="text-4xl font-black">
+            {isLoggedIn ? "Welcome back to StudyMate AI" : "Ready to study smarter?"}
+          </h3>
 
           <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">
-            Create an account, upload course material, and start using AI-powered
-            tools to organize your learning.
+            {isLoggedIn
+              ? "You are already logged in. Continue to your dashboard and keep managing your courses, materials, quizzes, and study plans."
+              : "Create an account, upload course material, and start using AI-powered tools to organize your learning."}
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <a
-              href="/register"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-7 py-4 font-semibold hover:from-indigo-600 hover:to-purple-600"
-            >
-              Create Account
-              <ArrowRight size={18} />
-            </a>
+            {isLoggedIn ? (
+              <a
+                href="/dashboard"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-7 py-4 font-semibold text-white hover:opacity-90"
+              >
+                Go to Dashboard
+                <ArrowRight size={18} />
+              </a>
+            ) : (
+              <>
+                <a
+                  href="/register"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 px-7 py-4 font-semibold text-white hover:opacity-90"
+                >
+                  Create Account
+                  <ArrowRight size={18} />
+                </a>
 
-            <a
-              href="/login"
-              className="rounded-2xl border border-slate-700 px-7 py-4 font-semibold hover:bg-slate-900"
-            >
-              Login
-            </a>
+                <a
+                  href="/login"
+                  className="rounded-2xl border border-slate-700 px-7 py-4 font-semibold hover:bg-slate-900"
+                >
+                  Login
+                </a>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -326,7 +364,7 @@ function LandingPage() {
 function HeroDashboardCard() {
   return (
     <div className="relative">
-      <div className="absolute -inset-5 rounded-[2.5rem] bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 opacity-20 blur-3xl"></div>
+      <div className="absolute -inset-5 rounded-[2.5rem] bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400 opacity-20 blur-3xl"></div>
 
       <div className="relative rounded-[2rem] border border-slate-800 bg-slate-900/80 p-6 shadow-2xl shadow-slate-950/60 backdrop-blur">
         <div className="mb-6 flex items-center justify-between">
@@ -346,8 +384,8 @@ function HeroDashboardCard() {
             <p className="font-semibold">Chapter 3 - Normalization.pdf</p>
           </div>
 
-          <div className="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-5">
-            <p className="mb-2 text-sm text-indigo-300">AI Summary</p>
+          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-5">
+            <p className="mb-2 text-sm text-cyan-300">AI Summary</p>
             <p className="text-sm leading-6 text-slate-200">
               Normalization organizes database tables to reduce redundancy and
               improve data consistency. Students can review the concept using quizzes
@@ -363,7 +401,7 @@ function HeroDashboardCard() {
           <div className="rounded-2xl border border-slate-800 p-5">
             <p className="mb-3 text-sm text-slate-400">Study Progress</p>
             <div className="h-3 rounded-full bg-slate-800">
-              <div className="h-3 w-[72%] rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400"></div>
+              <div className="h-3 w-[72%] rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-400"></div>
             </div>
             <p className="mt-2 text-sm text-slate-400">72% completed</p>
           </div>
@@ -376,7 +414,7 @@ function HeroDashboardCard() {
 function HeroMiniCard({ icon: Icon, title, subtitle }) {
   return (
     <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-5">
-      <Icon className="mb-4 text-indigo-300" size={26} />
+      <Icon className="mb-4 text-cyan-300" size={26} />
       <p className="text-2xl font-black">{title}</p>
       <p className="text-sm text-slate-400">{subtitle}</p>
     </div>
@@ -395,7 +433,7 @@ function StatBox({ number, label }) {
 function SectionHeader({ label, title, description }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <p className="mb-3 text-sm font-bold uppercase tracking-wider text-indigo-300">
+      <p className="mb-3 text-sm font-bold uppercase tracking-wider text-cyan-300">
         {label}
       </p>
       <h3 className="text-4xl font-black leading-tight md:text-5xl">{title}</h3>
@@ -408,8 +446,8 @@ function SectionHeader({ label, title, description }) {
 
 function FeatureCard({ icon: Icon, title, description }) {
   return (
-    <div className="group rounded-[2rem] border border-slate-800 bg-slate-900/70 p-7 transition hover:-translate-y-1 hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-950/20">
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 text-indigo-300">
+    <div className="group rounded-[2rem] border border-slate-800 bg-slate-900/70 p-7 transition hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-950/20">
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500/20 to-emerald-500/20 text-cyan-300">
         <Icon size={28} />
       </div>
 
@@ -456,7 +494,7 @@ function CheckItem({ text }) {
 function TechCard({ icon: Icon, title, description }) {
   return (
     <div className="rounded-[2rem] border border-slate-800 bg-slate-900/70 p-6 text-center">
-      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-300">
+      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
         <Icon size={28} />
       </div>
       <h4 className="text-xl font-bold">{title}</h4>
